@@ -23,7 +23,7 @@ benchmark:
 	$(GOTEST) -race -bench=. ./...
 
 build:
-	$(GOBUILD) -o $(TARGET) ./cmd
+	$(GOBUILD) -o $(TARGET) ./cmd/restserver
 
 clean:
 	rm $(TARGET)
@@ -33,4 +33,4 @@ image:
 	docker build --rm -t antonyho-auction-api-example .
 
 run:
-	$(GORUN) cmd/main.go
+	$(GORUN) cmd/restserver/main.go
