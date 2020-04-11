@@ -1,0 +1,141 @@
+openapi: 3.0.3
+info:
+  contact:
+    email: antony.h@riseup.net
+    name: Antony Ho
+    url: https://antonyho.net/
+  description: This is an example server for auction bid tracker.
+  license:
+    name: MIT
+  title: Auction Bid Tracker
+  version: 1.0.0
+servers:
+- description: developer server
+  url: http://localhost:{port}/{basePath}
+  variables:
+    port:
+      default: "8080"
+      enum:
+      - "8080"
+    basePath:
+      default: v1
+paths:
+  /item/{id}:
+    get:
+      description: list all bids on an item
+      operationId: listAllBidsByItemId
+      parameters:
+      - description: ID of auction item
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Bidding'
+                type: array
+          description: list all bids of the item
+        "404":
+          description: item not found
+    post:
+      description: place a bid on an item
+      operationId: bidItemById
+      parameters:
+      - description: ID of auction item
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bidding'
+        description: item to bid in an auction
+        required: true
+      responses:
+        "201":
+          description: bid placed
+        "400":
+          description: bid rejected
+        "404":
+          description: item not found
+  /item/{id}/winning:
+    get:
+      description: get the winning bid on an item
+      operationId: getWinningBidByItemId
+      parameters:
+      - description: ID of auction item
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bidding'
+          description: winning bid of the item
+        "404":
+          description: item not found
+  /user/{id}:
+    get:
+      description: list all bids by a user
+      operationId: listAllBidsByUserId
+      parameters:
+      - description: user ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Bidding'
+                type: array
+          description: all bids by a user
+        "404":
+          description: user not found
+components:
+  schemas:
+    Item:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      type: object
+    Bidding:
+      example:
+        bidder: bidder
+        price: 0.8008282
+      properties:
+        bidder:
+          type: string
+        price:
+          format: float
+          type: number
+      required:
+      - bidder
+      - price
+      type: object
