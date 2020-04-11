@@ -1,0 +1,174 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Auction Bid Tracker",
+        "description": "This is an example server for auction bid tracker.",
+        "contact": {
+            "name": "Antony Ho",
+            "url": "https://antonyho.net/",
+            "email": "antony.h@riseup.net"
+        },
+        "license": {
+            "name": "MIT"
+        },
+        "version": "1.0.0"
+    },
+    "components": {
+        "schemas": {
+            "Item": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Bidding": {
+                "type": "object",
+                "required": ["bidder", "price"],
+                "properties": {
+                    "bidder": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float"
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/item/{id}": {
+            "get": {
+                "description": "list all bids on an item",
+                "operationId": "listAllBidsByItemId",
+                "responses": {
+                    "200": {
+                        "description": "list all bids of the item",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Bidding"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "item not found"
+                    }
+                }
+            },
+            "post": {
+                "description": "place a bid on an item",
+                "operationId": "bidItemById",
+                "requestBody": {
+                    "description": "item to bid in an auction",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Bidding"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "bid placed"
+                    },
+                    "400": {
+                        "description": "bid rejected"
+                    },
+                    "404": {
+                        "description": "item not found"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "ID of auction item",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/item/{id}/winning": {
+            "get": {
+                "description": "get the winning bid on an item",
+                "operationId": "getWinningBidByItemId",
+                "responses": {
+                    "200": {
+                        "description": "winning bid of the item",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Bidding"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "item not found"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "ID of auction item",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/user/{id}": {
+            "get": {
+                "description": "list all bids by a user",
+                "operationId": "listAllBidsByUserId",
+                "responses": {
+                    "200": {
+                        "description": "all bids by a user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Bidding"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "user not found"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "user ID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        }
+    }
+}
