@@ -13,8 +13,8 @@ api:
 	docker run --rm \
 	-v $(PWD):/local openapitools/openapi-generator-cli generate \
 	-i /local/resources/api/spec/v1/swagger.json \
-	-g go \
-	-o /local/openapi
+	-g go-server \
+	-o /local/pkg/openapi
 
 test:
 	$(GOTEST) -v -race -cover ./...
