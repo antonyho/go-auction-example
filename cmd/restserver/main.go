@@ -14,7 +14,7 @@ import (
 	"log"
 	"net/http"
 
-	openapi "github.com/GIT_USER_ID/GIT_REPO_ID/go"
+	openapi "github.com/antonyho/go-auction-example/pkg/openapi/go"
 )
 
 func main() {
