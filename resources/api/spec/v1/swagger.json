@@ -46,8 +46,7 @@
                         "type": "string"
                     },
                     "price": {
-                        "type": "number",
-                        "format": "float"
+                        "type": "string"
                     }
                 }
             },

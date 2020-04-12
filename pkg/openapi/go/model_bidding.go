@@ -14,5 +14,5 @@ type Bidding struct {
 
 	Bidder string `json:"bidder"`
 
-	Price float32 `json:"price"`
+	Price string `json:"price"`
 }

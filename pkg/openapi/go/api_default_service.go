@@ -11,6 +11,8 @@
 package openapi
 
 import (
+	"strconv"
+
 	"github.com/antonyho/go-auction-example/pkg/auction"
 )
 
@@ -42,7 +44,11 @@ func (s *DefaultApiService) AddItem(item Item) (interface{}, error) {
 // BidItemById -
 // Item name is the Item ID for easier evaluation and test
 func (s *DefaultApiService) BidItemById(itemName string, bidding Bidding) (interface{}, error) {
-	offer := auction.NewOffer(itemName, bidding.Bidder, float64(bidding.Price))
+	price, err := strconv.ParseFloat(bidding.Price, 64)
+	if err != nil {
+		return nil, err
+	}
+	offer := auction.NewOffer(itemName, bidding.Bidder, price)
 	accepted, err := s.auctioneer.Hear(itemName, offer)
 	return accepted, err
 }
@@ -64,7 +70,7 @@ func (s *DefaultApiService) GetWinningBidByItemId(itemName string) (interface{},
 	if winning != nil {
 		return Bidding{
 			Bidder: winning.User,
-			Price:  float32(winning.Price),
+			Price:  strconv.FormatFloat(winning.Price, 'f', -1, 64),
 		}, nil
 	}
 
@@ -82,7 +88,7 @@ func (s *DefaultApiService) ListAllBidsByItemId(itemName string) (interface{}, e
 	for idx, bid := range bids {
 		biddings[idx] = Bidding{
 			Bidder: bid.User,
-			Price:  float32(bid.Price),
+			Price:  strconv.FormatFloat(bid.Price, 'f', -1, 64),
 		}
 	}
 	return bids, nil
@@ -102,7 +108,7 @@ func (s *DefaultApiService) ListAllBidsByUserId(id string) (interface{}, error) 
 		lastBid := bids[len(bids)-1]
 		userActivities[idx] = Activity{
 			Item: Item{Name: item},
-			Bid:  Bidding{Bidder: lastBid.User, Price: float32(lastBid.Price)},
+			Bid:  Bidding{Bidder: lastBid.User, Price: strconv.FormatFloat(lastBid.Price, 'f', -1, 64)},
 		}
 		idx++
 	}

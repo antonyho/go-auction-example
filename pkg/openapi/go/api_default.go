@@ -13,6 +13,7 @@ package openapi
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/antonyho/go-auction-example/pkg/auction"
@@ -111,6 +112,8 @@ func (c *DefaultApiController) BidItemById(w http.ResponseWriter, r *http.Reques
 		case auction.ErrItemNotExist:
 			w.WriteHeader(http.StatusNotFound)
 		case auction.ErrAuctionClose:
+			w.WriteHeader(http.StatusBadRequest)
+		case strconv.ErrSyntax:
 			w.WriteHeader(http.StatusBadRequest)
 		default:
 			w.WriteHeader(500)

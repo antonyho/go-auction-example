@@ -173,13 +173,12 @@ components:
     Bidding:
       example:
         bidder: bidder
-        price: 0.8008282
+        price: price
       properties:
         bidder:
           type: string
         price:
-          format: float
-          type: number
+          type: string
       required:
       - bidder
       - price
@@ -190,7 +189,7 @@ components:
           name: name
         bid:
           bidder: bidder
-          price: 0.8008282
+          price: price
       properties:
         item:
           $ref: '#/components/schemas/Item'
