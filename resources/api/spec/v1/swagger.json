@@ -50,6 +50,17 @@
                         "format": "float"
                     }
                 }
+            },
+            "Activity": {
+                "type": "object",
+                "properties": {
+                    "item": {
+                        "$ref": "#/components/schemas/Item"
+                    },
+                    "bid": {
+                        "$ref": "#/components/schemas/Bidding"
+                    }
+                }
             }
         }
     },
@@ -195,6 +206,9 @@
                             }
                         }
                     },
+                    "204": {
+                        "description": "no bidder"
+                    },
                     "404": {
                         "description": "item not found"
                     }
@@ -224,7 +238,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Bidding"
+                                        "$ref": "#/components/schemas/Activity"
                                     }
                                 }
                             }
