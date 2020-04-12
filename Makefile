@@ -23,7 +23,7 @@ benchmark:
 	$(GOTEST) -race -bench=. ./...
 
 build:
-	$(GOBUILD) -o $(TARGET) ./cmd/restserver
+	$(GOBUILD) -installsuffix cgo -o $(TARGET) ./cmd/restserver
 
 clean:
 	rm $(TARGET)
