@@ -22,6 +22,8 @@ func (a *Auctioneer) List(newItemName string) {
 		newItem := NewItem(newItemName)
 		a.house.Add(newItem)
 	}
+
+	go a.chant(newItemName)
 }
 
 // Hear a bid on specific item
@@ -30,7 +32,7 @@ func (a *Auctioneer) List(newItemName string) {
 func (a *Auctioneer) Hear(itemName string, offer *Offer) (bool, error) {
 	item, err := a.house.getItem(itemName)
 	if err == ErrItemNotExist {
-		return false, ErrItemNotExist
+		return false, err
 	}
 	if item.IsClosed() {
 		return false, ErrAuctionClose
@@ -64,7 +66,12 @@ func (a *Auctioneer) chant(itemName string) {
 	c := a.bidChans[itemName]
 	for offer := range c {
 		accepted, err := a.house.Bid(offer.Bidder, offer.Item, offer.Price)
-		result := NewBidResult(accepted, err.Error())
+		var result *BidResult
+		if err != nil {
+			result = NewBidResult(accepted, err.Error())
+		} else {
+			result = NewBidResult(accepted, "")
+		}
 		offer.ReplyChan <- *result
 	}
 	// This channel will be closed when auction has ended for this item
