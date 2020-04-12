@@ -16,6 +16,38 @@ var (
 	ErrAuctionClose = errors.New("auction has closed")
 )
 
+// Offer by bidder to an auction item
+type Offer struct {
+	Item      string
+	Bidder    string
+	Price     float64
+	ReplyChan chan BidResult
+}
+
+// NewOffer instantiates a new offer pointer to struct
+func NewOffer(itemName string, bidder string, price float64) *Offer {
+	return &Offer{
+		Item:      itemName,
+		Bidder:    bidder,
+		Price:     price,
+		ReplyChan: nil,
+	}
+}
+
+// BidResult is the outcome of an offer
+type BidResult struct {
+	Accepted     bool
+	RejectReason string
+}
+
+// NewBidResult instantiates a new BidResult pointer to struct
+func NewBidResult(isAccepted bool, rejectReason string) *BidResult {
+	return &BidResult{
+		Accepted:     isAccepted,
+		RejectReason: rejectReason,
+	}
+}
+
 // Bid is the event when a user place a bid to an auction item
 type Bid struct {
 	ID        string    `json:"id"`
@@ -45,7 +77,7 @@ type Item struct {
 func NewItem(name string) *Item {
 	return &Item{
 		Name:     name,
-		Bids:     make([]*Bid, 0, 0),
+		Bids:     make([]*Bid, 0, 0), // This auction doesn't implement opening bid
 		ClosedAt: nil,
 	}
 }
@@ -105,7 +137,7 @@ func (h *House) Close(itemName string) error {
 }
 
 // Bid an item
-// returns whether the bid has been accepted
+// Returns whether the bid has been accepted
 func (h *House) Bid(user string, itemName string, price float64) (bool, error) {
 	item, exist := h.list[itemName]
 	if !exist {
@@ -172,4 +204,14 @@ func (h *House) GetUserActivities(user string) (ActivityList, error) {
 	}
 
 	return activityList, nil
+}
+
+// getItem returns item internal-only
+func (h *House) getItem(itemName string) (*Item, error) {
+	item, exist := h.list[itemName]
+	if !exist {
+		return nil, ErrItemNotExist
+	}
+
+	return item, nil
 }
