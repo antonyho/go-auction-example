@@ -12,62 +12,107 @@ package openapi
 
 import (
 	"errors"
+
+	"github.com/antonyho/go-auction-example/pkg/auction"
 )
 
 // DefaultApiService is a service that implents the logic for the DefaultApiServicer
-// This service should implement the business logic for every endpoint for the DefaultApi API. 
+// This service should implement the business logic for every endpoint for the DefaultApi API.
 // Include any external packages or services that will be required by this service.
 type DefaultApiService struct {
+	auctionHouse *auction.House
+	auctioneer   *auction.Auctioneer
 }
 
 // NewDefaultApiService creates a default api service
 func NewDefaultApiService() DefaultApiServicer {
-	return &DefaultApiService{}
+	auctionHouse := auction.NewHouse()
+	auctioneer := auction.NewAuctioneer(auctionHouse)
+
+	return &DefaultApiService{
+		auctionHouse: auctionHouse,
+		auctioneer:   auctioneer,
+	}
 }
 
-// AddItem - 
+// AddItem -
 func (s *DefaultApiService) AddItem(item Item) (interface{}, error) {
-	// TODO - update AddItem with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-	return nil, errors.New("service method 'AddItem' not implemented")
+	s.auctioneer.List(item.Name)
+	return nil, nil
 }
 
-// BidItemById - 
+// BidItemById -
+// Item name is the Item ID for easier evaluation and test
 func (s *DefaultApiService) BidItemById(itemName string, bidding Bidding) (interface{}, error) {
-	// TODO - update BidItemById with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-	return nil, errors.New("service method 'BidItemById' not implemented")
+	offer := auction.NewOffer(itemName, bidding.Bidder, float64(bidding.Price))
+	accepted, err := s.auctioneer.Hear(itemName, offer)
+	return accepted, err
 }
 
-// CloseItem - 
+// CloseItem -
+// Item name is the Item ID for easier evaluation and test
 func (s *DefaultApiService) CloseItem(itemName string) (interface{}, error) {
-	// TODO - update CloseItem with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-	return nil, errors.New("service method 'CloseItem' not implemented")
+	s.auctioneer.Close(itemName)
+	return nil, nil
 }
 
-// GetWinningBidByItemId - 
+// GetWinningBidByItemId -
+// Item name is the Item ID for easier evaluation and test
 func (s *DefaultApiService) GetWinningBidByItemId(itemName string) (interface{}, error) {
-	// TODO - update GetWinningBidByItemId with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-	return nil, errors.New("service method 'GetWinningBidByItemId' not implemented")
+	winning, err := s.auctionHouse.GetLeading(itemName)
+	if err != nil {
+		return nil, err
+	}
+	if winning != nil {
+		return Bidding{
+			Bidder: winning.User,
+			Price:  float32(winning.Price),
+		}, nil
+	}
+
+	return nil, nil
 }
 
-// ListAllBidsByItemId - 
+// ListAllBidsByItemId -
+// Item name is the Item ID for easier evaluation and test
 func (s *DefaultApiService) ListAllBidsByItemId(itemName string) (interface{}, error) {
-	// TODO - update ListAllBidsByItemId with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-	return nil, errors.New("service method 'ListAllBidsByItemId' not implemented")
+	bids, err := s.auctionHouse.GetBids(itemName)
+	if err != nil {
+		return nil, err
+	}
+	biddings := make([]Bidding, len(bids))
+	for idx, bid := range bids {
+		biddings[idx] = Bidding{
+			Bidder: bid.User,
+			Price:  float32(bid.Price),
+		}
+	}
+	return bids, nil
 }
 
-// ListAllBidsByUserId - 
+// ListAllBidsByUserId -
+// User name is the User ID for easier evaluation and test
 func (s *DefaultApiService) ListAllBidsByUserId(id string) (interface{}, error) {
-	// TODO - update ListAllBidsByUserId with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-	return nil, errors.New("service method 'ListAllBidsByUserId' not implemented")
+	acitivities, err := s.auctionHouse.GetUserActivities(id)
+	if err != nil {
+		return nil, err
+	}
+
+	userActivities := make([]Activity, len(acitivities)) // The size is the number of bidded item
+	idx := 0
+	for item, bids := range acitivities {
+		lastBid := bids[len(bids)-1]
+		userActivities[idx] = &Activity{
+			Item: &Item{Name: item.Name},
+			Bid: &Bidding{Bidder: lastBid.User, Price: float32(lastBid.Price)}
+		}
+		idx++
+	}
+
+	return userActivities, nil
 }
 
-// ListAllItems - 
+// ListAllItems -
 func (s *DefaultApiService) ListAllItems() (interface{}, error) {
 	// TODO - update ListAllItems with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.

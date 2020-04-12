@@ -25,12 +25,12 @@ type DefaultApiController struct {
 
 // NewDefaultApiController creates a default api controller
 func NewDefaultApiController(s DefaultApiServicer) Router {
-	return &DefaultApiController{ service: s }
+	return &DefaultApiController{service: s}
 }
 
 // Routes returns all of the api route for the DefaultApiController
 func (c *DefaultApiController) Routes() Routes {
-	return Routes{ 
+	return Routes{
 		{
 			"AddItem",
 			strings.ToUpper("Post"),
@@ -76,25 +76,25 @@ func (c *DefaultApiController) Routes() Routes {
 	}
 }
 
-// AddItem - 
-func (c *DefaultApiController) AddItem(w http.ResponseWriter, r *http.Request) { 
+// AddItem -
+func (c *DefaultApiController) AddItem(w http.ResponseWriter, r *http.Request) {
 	item := &Item{}
 	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	result, err := c.service.AddItem(*item)
 	if err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
-	EncodeJSONResponse(result, nil, w)
+
+	EncodeJSONResponse(result, http.StatusCreated, w)
 }
 
-// BidItemById - 
-func (c *DefaultApiController) BidItemById(w http.ResponseWriter, r *http.Request) { 
+// BidItemById -
+func (c *DefaultApiController) BidItemById(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	itemName := params["itemName"]
 	bidding := &Bidding{}
@@ -102,18 +102,29 @@ func (c *DefaultApiController) BidItemById(w http.ResponseWriter, r *http.Reques
 		w.WriteHeader(500)
 		return
 	}
-	
-	result, err := c.service.BidItemById(itemName, *bidding)
+
+	accepted, err := c.service.BidItemById(itemName, *bidding)
 	if err != nil {
-		w.WriteHeader(500)
+		switch err {
+		case auction.ErrItemNotExist:
+			w.WriteHeader(http.StatusNotFound)
+		case auction.ErrAuctionClose:
+			w.WriteHeader(http.StatusBadRequest)
+		default:
+			w.WriteHeader(500)
+		}
+
 		return
 	}
-	
-	EncodeJSONResponse(result, nil, w)
+	if accepted.(bool) {
+		EncodeJSONResponse(nil, http.StatusCreated, w)
+	} else {
+		EncodeJSONResponse(nil, http.StatusBadRequest, w)
+	}
 }
 
-// CloseItem - 
-func (c *DefaultApiController) CloseItem(w http.ResponseWriter, r *http.Request) { 
+// CloseItem -
+func (c *DefaultApiController) CloseItem(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	itemName := params["itemName"]
 	result, err := c.service.CloseItem(itemName)
@@ -121,56 +132,74 @@ func (c *DefaultApiController) CloseItem(w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(500)
 		return
 	}
-	
-	EncodeJSONResponse(result, nil, w)
+
+	EncodeJSONResponse(result, http.StatusAccepted, w)
 }
 
-// GetWinningBidByItemId - 
-func (c *DefaultApiController) GetWinningBidByItemId(w http.ResponseWriter, r *http.Request) { 
+// GetWinningBidByItemId -
+func (c *DefaultApiController) GetWinningBidByItemId(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	itemName := params["itemName"]
-	result, err := c.service.GetWinningBidByItemId(itemName)
+	winning, err := c.service.GetWinningBidByItemId(itemName)
 	if err != nil {
-		w.WriteHeader(500)
+		switch err {
+		case auction.ErrItemNotExist:
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			w.WriteHeader(500)
+		}
 		return
 	}
-	
-	EncodeJSONResponse(result, nil, w)
+	if winning != nil {
+		EncodeJSONResponse(winning, nil, w)
+	} else {
+		EncodeJSONResponse(nil, http.StatusNoContent, w)
+	}
 }
 
-// ListAllBidsByItemId - 
-func (c *DefaultApiController) ListAllBidsByItemId(w http.ResponseWriter, r *http.Request) { 
+// ListAllBidsByItemId -
+func (c *DefaultApiController) ListAllBidsByItemId(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	itemName := params["itemName"]
 	result, err := c.service.ListAllBidsByItemId(itemName)
 	if err != nil {
-		w.WriteHeader(500)
+		switch err {
+		case auction.ErrItemNotExist:
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			w.WriteHeader(500)
+		}
 		return
 	}
-	
+
 	EncodeJSONResponse(result, nil, w)
 }
 
-// ListAllBidsByUserId - 
-func (c *DefaultApiController) ListAllBidsByUserId(w http.ResponseWriter, r *http.Request) { 
+// ListAllBidsByUserId -
+func (c *DefaultApiController) ListAllBidsByUserId(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
-	result, err := c.service.ListAllBidsByUserId(id)
+	activities, err := c.service.ListAllBidsByUserId(id)
 	if err != nil {
-		w.WriteHeader(500)
+		switch err {
+		case auction.ErrUserNotExist:
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			w.WriteHeader(500)
+		}
 		return
 	}
-	
-	EncodeJSONResponse(result, nil, w)
+
+	EncodeJSONResponse(activities, nil, w)
 }
 
-// ListAllItems - 
-func (c *DefaultApiController) ListAllItems(w http.ResponseWriter, r *http.Request) { 
+// ListAllItems -
+func (c *DefaultApiController) ListAllItems(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.ListAllItems()
 	if err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	EncodeJSONResponse(result, nil, w)
 }
