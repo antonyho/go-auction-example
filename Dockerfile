@@ -10,4 +10,4 @@ RUN make
 FROM scratch AS runtime
 COPY --from=build /go/src/github.com/antonyho/go-auction-example/auction-api-example /go/bin/
 EXPOSE 8080/tcp
-ENTRYPOINT ["./auction-api-example"]
+ENTRYPOINT ["/go/bin/auction-api-example"]
