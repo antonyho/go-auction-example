@@ -34,7 +34,7 @@ paths:
       responses:
         "201":
           description: new item added
-  /item/{item_name}/close:
+  /item/{itemName}/close:
     put:
       description: close auction for an item
       operationId: closeItem
@@ -42,7 +42,7 @@ paths:
       - description: Name of auction item
         explode: false
         in: path
-        name: item_name
+        name: itemName
         required: true
         schema:
           type: string
@@ -63,7 +63,7 @@ paths:
                   $ref: '#/components/schemas/Item'
                 type: array
           description: list all items in auction
-  /bid/{item_name}:
+  /bid/{itemName}:
     get:
       description: list all bids on an item
       operationId: listAllBidsByItemId
@@ -71,7 +71,7 @@ paths:
       - description: Name of auction item
         explode: false
         in: path
-        name: item_name
+        name: itemName
         required: true
         schema:
           type: string
@@ -94,7 +94,7 @@ paths:
       - description: Name of auction item
         explode: false
         in: path
-        name: item_name
+        name: itemName
         required: true
         schema:
           type: string
@@ -113,7 +113,7 @@ paths:
           description: bid rejected
         "404":
           description: item not found
-  /bid/{item_name}/winning:
+  /bid/{itemName}/winning:
     get:
       description: get the winning bid on an item
       operationId: getWinningBidByItemId
@@ -121,7 +121,7 @@ paths:
       - description: name of auction item
         explode: false
         in: path
-        name: item_name
+        name: itemName
         required: true
         schema:
           type: string

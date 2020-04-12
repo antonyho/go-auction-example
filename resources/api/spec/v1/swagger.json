@@ -87,27 +87,27 @@
                 }
             }
         },
-        "/item/{item_name}/close": {
+        "/item/{itemName}/close": {
             "put": {
                 "description": "close auction for an item",
                 "operationId": "closeItem",
+                "parameters": [
+                    {
+                        "name": "itemName",
+                        "in": "path",
+                        "description": "Name of auction item",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "202": {
                         "description": "item auction closed"
                     }
                 }
-            },
-            "parameters": [
-                {
-                    "name": "item_name",
-                    "in": "path",
-                    "description": "Name of auction item",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }
-            ]
+            }
         },
         "/items": {
             "get": {
@@ -130,10 +130,21 @@
                 }
             }
         },
-        "/bid/{item_name}": {
+        "/bid/{itemName}": {
             "get": {
                 "description": "list all bids on an item",
                 "operationId": "listAllBidsByItemId",
+                "parameters": [
+                    {
+                        "name": "itemName",
+                        "in": "path",
+                        "description": "Name of auction item",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "list all bids of the item",
@@ -156,6 +167,17 @@
             "post": {
                 "description": "place a bid on an item",
                 "operationId": "bidItemById",
+                "parameters": [
+                    {
+                        "name": "itemName",
+                        "in": "path",
+                        "description": "Name of auction item",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "item to bid in an auction",
                     "content": {
@@ -178,23 +200,23 @@
                         "description": "item not found"
                     }
                 }
-            },
-            "parameters": [
-                {
-                    "name": "item_name",
-                    "in": "path",
-                    "description": "Name of auction item",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }
-            ]
+            }
         },
-        "/bid/{item_name}/winning": {
+        "/bid/{itemName}/winning": {
             "get": {
                 "description": "get the winning bid on an item",
                 "operationId": "getWinningBidByItemId",
+                "parameters": [
+                    {
+                        "name": "itemName",
+                        "in": "path",
+                        "description": "name of auction item",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "winning bid of the item",
@@ -213,23 +235,23 @@
                         "description": "item not found"
                     }
                 }
-            },
-            "parameters": [
-                {
-                    "name": "item_name",
-                    "in": "path",
-                    "description": "name of auction item",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }
-            ]
+            }
         },
         "/user/{id}": {
             "get": {
                 "description": "list all bids by a user",
                 "operationId": "listAllBidsByUserId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "user ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "all bids by a user",
@@ -248,18 +270,7 @@
                         "description": "user not found"
                     }
                 }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "path",
-                    "description": "user ID",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }
-            ]
+            }
         }
     }
 }

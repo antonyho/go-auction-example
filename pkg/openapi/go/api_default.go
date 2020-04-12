@@ -41,25 +41,25 @@ func (c *DefaultApiController) Routes() Routes {
 		{
 			"BidItemById",
 			strings.ToUpper("Post"),
-			"/v1/bid/{item_name}",
+			"/v1/bid/{itemName}",
 			c.BidItemById,
 		},
 		{
 			"CloseItem",
 			strings.ToUpper("Put"),
-			"/v1/item/{item_name}/close",
+			"/v1/item/{itemName}/close",
 			c.CloseItem,
 		},
 		{
 			"GetWinningBidByItemId",
 			strings.ToUpper("Get"),
-			"/v1/bid/{item_name}/winning",
+			"/v1/bid/{itemName}/winning",
 			c.GetWinningBidByItemId,
 		},
 		{
 			"ListAllBidsByItemId",
 			strings.ToUpper("Get"),
-			"/v1/bid/{item_name}",
+			"/v1/bid/{itemName}",
 			c.ListAllBidsByItemId,
 		},
 		{
