@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "8373223c-3701-4914-9b6c-7c5afd2cb37d",
+		"name": "go-auction-example",
+		"description": "Test Collection for Go RESTful API Auction Bid Tracker Example Project with OpenAPI Specification\n\nProject URL: https://github.com/antonyho/go-auction-example\n\nThis collection is supposed to be used for testing on local environment. Use Docker to build and run the container.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List all auctioned items",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/items",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add New Item - Mona Lisa",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Mona Lisa\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/item",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"item"
+					]
+				},
+				"description": "Add new auction item called \"Mona Lisa\""
+			},
+			"response": []
+		},
+		{
+			"name": "Add New Item - The Creation of Adam",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"The Creation of Adam\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/item",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"item"
+					]
+				},
+				"description": "Add new auction item called \"The Creation of Adam\""
+			},
+			"response": []
+		},
+		{
+			"name": "Bid Item - Mona Lisa",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"bidder\": \"Antony\",\n\t\"price\": \"2000.0\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/bid/Mona%20Lisa",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"bid",
+						"Mona%20Lisa"
+					]
+				},
+				"description": "Place a bid on an item called \"Mona Lisa\""
+			},
+			"response": []
+		},
+		{
+			"name": "List all bids on item - Mono Lisa",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/bid/Mona%20Lisa",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"bid",
+						"Mona%20Lisa"
+					]
+				},
+				"description": "List all bids on an item called \"Mona Lisa\""
+			},
+			"response": []
+		},
+		{
+			"name": "List all bids by a user - Antony",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/user/Antony",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"user",
+						"Antony"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get winning bid on item - Mono Lisa",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/bid/Mona%20Lisa/winning",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"bid",
+						"Mona%20Lisa",
+						"winning"
+					]
+				},
+				"description": "Get winning bid on an item called \"Mona Lisa\""
+			},
+			"response": []
+		},
+		{
+			"name": "Close Auction Item - Mona Lisa",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/item/Mona%20Lisa/close",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"item",
+						"Mona%20Lisa",
+						"close"
+					]
+				},
+				"description": "Close auction for item called \"Mona Lisa\""
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "2d2eef96-f7dd-4125-8bf6-c89795b53b00",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5f84f07f-1b3a-465c-9b9c-8894263fe656",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
