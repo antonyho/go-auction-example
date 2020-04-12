@@ -21,6 +21,18 @@ func TestHouse_Add(t *testing.T) {
 	assert.Len(t, house.list, 1)
 }
 
+func TestHouse_Close(t *testing.T) {
+	house := NewHouse()
+
+	item := NewItem("Mona Lisa")
+	house.Add(item)
+	err := house.Close("Mona Lisa")
+	assert.NoError(t, err)
+
+	err = house.Close("Mona Lisa")
+	assert.Error(t, err)
+}
+
 func TestHouse_Bid(t *testing.T) {
 	house := NewHouse()
 
@@ -47,6 +59,14 @@ func TestHouse_Bid(t *testing.T) {
 
 	bidResult, err = house.Bid("LeonardoDaVinci", "Mona Lisa", 11.0)
 	assert.NoError(t, err)
+	assert.False(t, bidResult)
+	assert.Len(t, house.list["Mona Lisa"].Bids, 2)
+
+	err = house.Close("Mona Lisa")
+	assert.NoError(t, err)
+
+	bidResult, err = house.Bid("Antony", "Mona Lisa", 100.0)
+	assert.Error(t, err)
 	assert.False(t, bidResult)
 	assert.Len(t, house.list["Mona Lisa"].Bids, 2)
 }

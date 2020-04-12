@@ -12,6 +12,8 @@ var (
 	ErrItemNotExist = errors.New("item does not exist")
 	// ErrUserNotExist is an error when a user is not found by the given name
 	ErrUserNotExist = errors.New("User does not exist")
+	// ErrAuctionClose is an error when bidding on a closed auction
+	ErrAuctionClose = errors.New("auction has closed")
 )
 
 // Bid is the event when a user place a bid to an auction item
@@ -34,20 +36,38 @@ func NewBid(user string, price float64) *Bid {
 
 // Item is the object which is listed in an auction
 type Item struct {
-	Name string `json:"name"`
-	Bids []*Bid `json:"bids"`
+	Name     string     `json:"name"`
+	Bids     []*Bid     `json:"bids"`
+	ClosedAt *time.Time `json:"closed_at"`
 }
-
-// ActivityList is a list of auction acitvities on an item done by specific user
-type ActivityList map[string][]*Bid // item_name:bids
 
 // NewItem instantiates a new Item pointer to struct
 func NewItem(name string) *Item {
 	return &Item{
-		Name: name,
-		Bids: make([]*Bid, 0, 0),
+		Name:     name,
+		Bids:     make([]*Bid, 0, 0),
+		ClosedAt: nil,
 	}
 }
+
+// Close the auction on an item
+func (i *Item) Close() {
+	if i.ClosedAt == nil {
+		now := time.Now()
+		i.ClosedAt = &now
+	}
+}
+
+// IsClosed returns auction closure status
+func (i *Item) IsClosed() bool {
+	if i.ClosedAt != nil {
+		return true
+	}
+	return false
+}
+
+// ActivityList is a list of auction acitvities on an item done by specific user
+type ActivityList map[string][]*Bid // item_name:bids
 
 // House is an auction house system to all items which are put into auction
 type House struct {
@@ -70,12 +90,29 @@ func (h *House) Add(item *Item) {
 	}
 }
 
+// Close an item auction
+func (h *House) Close(itemName string) error {
+	item, exist := h.list[itemName]
+	if !exist {
+		return ErrItemNotExist
+	} else if item.IsClosed() {
+		return ErrAuctionClose
+	}
+
+	item.Close()
+
+	return nil
+}
+
 // Bid an item
 // returns whether the bid has been accepted
 func (h *House) Bid(user string, itemName string, price float64) (bool, error) {
 	item, exist := h.list[itemName]
 	if !exist {
 		return false, ErrItemNotExist
+	}
+	if item.IsClosed() {
+		return false, ErrAuctionClose
 	}
 	bid := NewBid(user, price)
 	if len(item.Bids) > 0 {
