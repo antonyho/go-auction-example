@@ -206,6 +206,16 @@ func (h *House) GetUserActivities(user string) (ActivityList, error) {
 	return activityList, nil
 }
 
+// ListItems lists all items which has been added into auction house
+func (h *House) ListItems() []string {
+	items := make([]string, 0, len(h.list))
+	for itemName := range h.list {
+		items = append(items, itemName)
+	}
+
+	return items
+}
+
 // getItem returns item internal-only
 func (h *House) getItem(itemName string) (*Item, error) {
 	item, exist := h.list[itemName]

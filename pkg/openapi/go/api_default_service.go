@@ -11,8 +11,6 @@
 package openapi
 
 import (
-	"errors"
-
 	"github.com/antonyho/go-auction-example/pkg/auction"
 )
 
@@ -114,7 +112,10 @@ func (s *DefaultApiService) ListAllBidsByUserId(id string) (interface{}, error) 
 
 // ListAllItems -
 func (s *DefaultApiService) ListAllItems() (interface{}, error) {
-	// TODO - update ListAllItems with the required logic for this service method.
-	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-	return nil, errors.New("service method 'ListAllItems' not implemented")
+	itemNames := s.auctionHouse.ListItems()
+	items := make([]Item, len(itemNames))
+	for idx, itemName := range itemNames {
+		items[idx] = Item{Name: itemName}
+	}
+	return items, nil
 }

@@ -174,3 +174,16 @@ func TestHouse_GetUserActivities(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, na)
 }
+
+func TestHouse_ListItems(t *testing.T) {
+	house := NewHouse()
+
+	house.Add(NewItem("Mona Lisa"))
+	house.Add(NewItem("The Creation of Adam"))
+	house.Add(NewItem("Mona Lisa"))
+
+	items := house.ListItems()
+	assert.Len(t, items, 2)
+	assert.Contains(t, items, "Mona Lisa")
+	assert.Contains(t, items, "The Creation of Adam")
+}
