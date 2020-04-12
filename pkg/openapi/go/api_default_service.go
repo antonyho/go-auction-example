@@ -102,9 +102,9 @@ func (s *DefaultApiService) ListAllBidsByUserId(id string) (interface{}, error) 
 	idx := 0
 	for item, bids := range acitivities {
 		lastBid := bids[len(bids)-1]
-		userActivities[idx] = &Activity{
-			Item: &Item{Name: item.Name},
-			Bid: &Bidding{Bidder: lastBid.User, Price: float32(lastBid.Price)}
+		userActivities[idx] = Activity{
+			Item: Item{Name: item},
+			Bid:  Bidding{Bidder: lastBid.User, Price: float32(lastBid.Price)},
 		}
 		idx++
 	}

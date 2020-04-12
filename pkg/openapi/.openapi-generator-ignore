@@ -22,5 +22,5 @@
 # Then explicitly reverse the ignore rule for a single file:
 #!docs/README.md
 
-api_default_service.go
-api_default.go
+pkg/**/api_default_service.go
+pkg/**/api_default.go

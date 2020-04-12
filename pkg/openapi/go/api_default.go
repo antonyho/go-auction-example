@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/antonyho/go-auction-example/pkg/auction"
 	"github.com/gorilla/mux"
 )
 
@@ -90,7 +91,8 @@ func (c *DefaultApiController) AddItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	EncodeJSONResponse(result, http.StatusCreated, w)
+	respCode := http.StatusCreated
+	EncodeJSONResponse(result, &respCode, w)
 }
 
 // BidItemById -
@@ -116,11 +118,13 @@ func (c *DefaultApiController) BidItemById(w http.ResponseWriter, r *http.Reques
 
 		return
 	}
+	var respCode int
 	if accepted.(bool) {
-		EncodeJSONResponse(nil, http.StatusCreated, w)
+		respCode = http.StatusCreated
 	} else {
-		EncodeJSONResponse(nil, http.StatusBadRequest, w)
+		respCode = http.StatusBadRequest
 	}
+	EncodeJSONResponse(nil, &respCode, w)
 }
 
 // CloseItem -
@@ -133,7 +137,8 @@ func (c *DefaultApiController) CloseItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	EncodeJSONResponse(result, http.StatusAccepted, w)
+	respCode := http.StatusAccepted
+	EncodeJSONResponse(result, &respCode, w)
 }
 
 // GetWinningBidByItemId -
@@ -153,7 +158,8 @@ func (c *DefaultApiController) GetWinningBidByItemId(w http.ResponseWriter, r *h
 	if winning != nil {
 		EncodeJSONResponse(winning, nil, w)
 	} else {
-		EncodeJSONResponse(nil, http.StatusNoContent, w)
+		respCode := http.StatusNoContent
+		EncodeJSONResponse(nil, &respCode, w)
 	}
 }
 

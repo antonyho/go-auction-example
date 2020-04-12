@@ -133,6 +133,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Bidding'
           description: winning bid of the item
+        "204":
+          description: no bidder
         "404":
           description: item not found
   /user/{id}:
@@ -154,7 +156,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/Bidding'
+                  $ref: '#/components/schemas/Activity'
                 type: array
           description: all bids by a user
         "404":
@@ -181,4 +183,17 @@ components:
       required:
       - bidder
       - price
+      type: object
+    Activity:
+      example:
+        item:
+          name: name
+        bid:
+          bidder: bidder
+          price: 0.8008282
+      properties:
+        item:
+          $ref: '#/components/schemas/Item'
+        bid:
+          $ref: '#/components/schemas/Bidding'
       type: object
