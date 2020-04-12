@@ -1,7 +1,7 @@
 /*
  * Auction Bid Tracker
  *
- * This is a server for auction bid tracker.
+ * This is an example server for auction bid tracker.
  *
  * API version: 1.0.0
  * Contact: antony.h@riseup.net
@@ -14,7 +14,7 @@ import (
 	"log"
 	"net/http"
 
-	openapi "github.com/antonyho/go-auction-example/pkg/openapi/go"
+	openapi "github.com/GIT_USER_ID/GIT_REPO_ID/go"
 )
 
 func main() {

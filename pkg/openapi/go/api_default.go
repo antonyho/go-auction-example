@@ -32,21 +32,33 @@ func NewDefaultApiController(s DefaultApiServicer) Router {
 func (c *DefaultApiController) Routes() Routes {
 	return Routes{ 
 		{
+			"AddItem",
+			strings.ToUpper("Post"),
+			"/v1/item",
+			c.AddItem,
+		},
+		{
 			"BidItemById",
 			strings.ToUpper("Post"),
-			"/v1/item/{id}",
+			"/v1/bid/{item_name}",
 			c.BidItemById,
+		},
+		{
+			"CloseItem",
+			strings.ToUpper("Put"),
+			"/v1/item/{item_name}/close",
+			c.CloseItem,
 		},
 		{
 			"GetWinningBidByItemId",
 			strings.ToUpper("Get"),
-			"/v1/item/{id}/winning",
+			"/v1/bid/{item_name}/winning",
 			c.GetWinningBidByItemId,
 		},
 		{
 			"ListAllBidsByItemId",
 			strings.ToUpper("Get"),
-			"/v1/item/{id}",
+			"/v1/bid/{item_name}",
 			c.ListAllBidsByItemId,
 		},
 		{
@@ -55,20 +67,56 @@ func (c *DefaultApiController) Routes() Routes {
 			"/v1/user/{id}",
 			c.ListAllBidsByUserId,
 		},
+		{
+			"ListAllItems",
+			strings.ToUpper("Get"),
+			"/v1/items",
+			c.ListAllItems,
+		},
 	}
+}
+
+// AddItem - 
+func (c *DefaultApiController) AddItem(w http.ResponseWriter, r *http.Request) { 
+	item := &Item{}
+	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.AddItem(*item)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	EncodeJSONResponse(result, nil, w)
 }
 
 // BidItemById - 
 func (c *DefaultApiController) BidItemById(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	id := params["id"]
+	itemName := params["itemName"]
 	bidding := &Bidding{}
 	if err := json.NewDecoder(r.Body).Decode(&bidding); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.BidItemById(id, *bidding)
+	result, err := c.service.BidItemById(itemName, *bidding)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	EncodeJSONResponse(result, nil, w)
+}
+
+// CloseItem - 
+func (c *DefaultApiController) CloseItem(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	itemName := params["itemName"]
+	result, err := c.service.CloseItem(itemName)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -80,8 +128,8 @@ func (c *DefaultApiController) BidItemById(w http.ResponseWriter, r *http.Reques
 // GetWinningBidByItemId - 
 func (c *DefaultApiController) GetWinningBidByItemId(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	id := params["id"]
-	result, err := c.service.GetWinningBidByItemId(id)
+	itemName := params["itemName"]
+	result, err := c.service.GetWinningBidByItemId(itemName)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -93,8 +141,8 @@ func (c *DefaultApiController) GetWinningBidByItemId(w http.ResponseWriter, r *h
 // ListAllBidsByItemId - 
 func (c *DefaultApiController) ListAllBidsByItemId(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	id := params["id"]
-	result, err := c.service.ListAllBidsByItemId(id)
+	itemName := params["itemName"]
+	result, err := c.service.ListAllBidsByItemId(itemName)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -108,6 +156,17 @@ func (c *DefaultApiController) ListAllBidsByUserId(w http.ResponseWriter, r *htt
 	params := mux.Vars(r)
 	id := params["id"]
 	result, err := c.service.ListAllBidsByUserId(id)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	EncodeJSONResponse(result, nil, w)
+}
+
+// ListAllItems - 
+func (c *DefaultApiController) ListAllItems(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ListAllItems()
 	if err != nil {
 		w.WriteHeader(500)
 		return

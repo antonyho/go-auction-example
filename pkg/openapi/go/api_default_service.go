@@ -25,22 +25,36 @@ func NewDefaultApiService() DefaultApiServicer {
 	return &DefaultApiService{}
 }
 
+// AddItem - 
+func (s *DefaultApiService) AddItem(item Item) (interface{}, error) {
+	// TODO - update AddItem with the required logic for this service method.
+	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	return nil, errors.New("service method 'AddItem' not implemented")
+}
+
 // BidItemById - 
-func (s *DefaultApiService) BidItemById(id string, bidding Bidding) (interface{}, error) {
+func (s *DefaultApiService) BidItemById(itemName string, bidding Bidding) (interface{}, error) {
 	// TODO - update BidItemById with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'BidItemById' not implemented")
 }
 
+// CloseItem - 
+func (s *DefaultApiService) CloseItem(itemName string) (interface{}, error) {
+	// TODO - update CloseItem with the required logic for this service method.
+	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	return nil, errors.New("service method 'CloseItem' not implemented")
+}
+
 // GetWinningBidByItemId - 
-func (s *DefaultApiService) GetWinningBidByItemId(id string) (interface{}, error) {
+func (s *DefaultApiService) GetWinningBidByItemId(itemName string) (interface{}, error) {
 	// TODO - update GetWinningBidByItemId with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'GetWinningBidByItemId' not implemented")
 }
 
 // ListAllBidsByItemId - 
-func (s *DefaultApiService) ListAllBidsByItemId(id string) (interface{}, error) {
+func (s *DefaultApiService) ListAllBidsByItemId(itemName string) (interface{}, error) {
 	// TODO - update ListAllBidsByItemId with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'ListAllBidsByItemId' not implemented")
@@ -51,4 +65,11 @@ func (s *DefaultApiService) ListAllBidsByUserId(id string) (interface{}, error) 
 	// TODO - update ListAllBidsByUserId with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'ListAllBidsByUserId' not implemented")
+}
+
+// ListAllItems - 
+func (s *DefaultApiService) ListAllItems() (interface{}, error) {
+	// TODO - update ListAllItems with the required logic for this service method.
+	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	return nil, errors.New("service method 'ListAllItems' not implemented")
 }

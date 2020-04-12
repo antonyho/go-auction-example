@@ -33,9 +33,6 @@
             "Item": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "string"
-                    },
                     "name": {
                         "type": "string"
                     }
@@ -57,7 +54,72 @@
         }
     },
     "paths": {
-        "/item/{id}": {
+        "/item": {
+            "post": {
+                "description": "add new item",
+                "operationId": "addItem",
+                "requestBody": {
+                    "description": "add item to an auction",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Item"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "new item added"
+                    }
+                }
+            }
+        },
+        "/item/{item_name}/close": {
+            "put": {
+                "description": "close auction for an item",
+                "operationId": "closeItem",
+                "responses": {
+                    "202": {
+                        "description": "item auction closed"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "item_name",
+                    "in": "path",
+                    "description": "Name of auction item",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/items": {
+            "get": {
+                "description": "list all items",
+                "operationId": "listAllItems",
+                "responses": {
+                    "200": {
+                        "description": "list all items in auction",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Item"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bid/{item_name}": {
             "get": {
                 "description": "list all bids on an item",
                 "operationId": "listAllBidsByItemId",
@@ -108,9 +170,9 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "item_name",
                     "in": "path",
-                    "description": "ID of auction item",
+                    "description": "Name of auction item",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -118,7 +180,7 @@
                 }
             ]
         },
-        "/item/{id}/winning": {
+        "/bid/{item_name}/winning": {
             "get": {
                 "description": "get the winning bid on an item",
                 "operationId": "getWinningBidByItemId",
@@ -140,9 +202,9 @@
             },
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "item_name",
                     "in": "path",
-                    "description": "ID of auction item",
+                    "description": "name of auction item",
                     "required": true,
                     "schema": {
                         "type": "string"

@@ -19,10 +19,13 @@ import (
 // The DefaultApiRouter implementation should parse necessary information from the http request, 
 // pass the data to a DefaultApiServicer to perform the required actions, then write the service results to the http response.
 type DefaultApiRouter interface { 
+	AddItem(http.ResponseWriter, *http.Request)
 	BidItemById(http.ResponseWriter, *http.Request)
+	CloseItem(http.ResponseWriter, *http.Request)
 	GetWinningBidByItemId(http.ResponseWriter, *http.Request)
 	ListAllBidsByItemId(http.ResponseWriter, *http.Request)
 	ListAllBidsByUserId(http.ResponseWriter, *http.Request)
+	ListAllItems(http.ResponseWriter, *http.Request)
 }
 
 
@@ -31,8 +34,11 @@ type DefaultApiRouter interface {
 // while the service implementation can ignored with the .openapi-generator-ignore file 
 // and updated with the logic required for the API.
 type DefaultApiServicer interface { 
+	AddItem(Item) (interface{}, error)
 	BidItemById(string, Bidding) (interface{}, error)
+	CloseItem(string) (interface{}, error)
 	GetWinningBidByItemId(string) (interface{}, error)
 	ListAllBidsByItemId(string) (interface{}, error)
 	ListAllBidsByUserId(string) (interface{}, error)
+	ListAllItems() (interface{}, error)
 }
